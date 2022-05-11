@@ -1,6 +1,7 @@
 package cz.tul.weather.city;
 
 import cz.tul.weather.country.Country;
+import cz.tul.weather.country.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,9 @@ public class CityController {
     private final CityService cityService;
 
     @Autowired
-    public CityController(CityService cityService){this.cityService = cityService;}
+    public CityController(CityService cityService){
+        this.cityService = cityService;
+    }
 
     @GetMapping(path = "/city")
     public List<City> getCities() {return cityService.getCities();}
@@ -22,6 +25,10 @@ public class CityController {
     public City getCity(@PathVariable("cityId") Long cityId){
         return cityService.getCity(cityId);
     }
+
+    @GetMapping(path= "/country/{countryName}/{cityName}")
+    public City getCityInCountry(@PathVariable("countryName") String countryName, @PathVariable("cityName") String cityName){return cityService.getCityInCountry(countryName, cityName);}
+
 
     @PostMapping(path = "/city")
     public void registerNewCity(@RequestBody City city){

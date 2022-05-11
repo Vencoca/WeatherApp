@@ -1,5 +1,6 @@
 package cz.tul.weather.city;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import cz.tul.weather.country.Country;
 import cz.tul.weather.country.CountryRepository;
 
@@ -24,7 +25,8 @@ public class City {
     private double longitude;
     private double latitude;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
+    @JsonBackReference
     private Country country;
 
     public City() {
@@ -79,9 +81,6 @@ public class City {
 
     public Country getCountry() {
         return country;
-    }
-
-    public void setCountry(String country){
     }
 
     public void setCountry(Country country) {

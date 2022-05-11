@@ -1,5 +1,6 @@
 package cz.tul.weather.country;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import cz.tul.weather.city.City;
 
 import javax.persistence.*;
