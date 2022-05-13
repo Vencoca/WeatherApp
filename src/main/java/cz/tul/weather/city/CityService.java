@@ -24,57 +24,59 @@ public class CityService {
 
     public List<City> getCities() {return cityRepository.findAll();}
 
-    public void addNewCity(City city){
+    public void addNewCity(String countryName, City city){
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(
+                "Country with name " + countryName + " does not exist!"
+        ));
         Optional<City> cityOptional = cityRepository.findCityByNameAndCountry(city.getName(), city.getCountry());
         if (cityOptional.isPresent()){
-            throw new IllegalStateException("City with this name exist this country");
+            throw new IllegalStateException("City with this name already exists in this country!");
         }
+        city.setCountry(country);
         cityRepository.save(city);
     }
 
-    public void deleteCity(Long cityId){
-        boolean exists = cityRepository.existsById(cityId);
-        if (!exists){
-            throw new IllegalStateException(
-                    "city with id" + cityId + "does not exists");
-        }
-        cityRepository.deleteById(cityId);
-    }
-
-    @Transactional
-    public void updateCity(Long cityId, String name, Double longitude, Double latitude, Country country){
-        City city = cityRepository.findById(cityId).orElseThrow(() -> new IllegalStateException(
-                "city with id " + cityId + "does not exists"
-        ));
-
-        if (name != null && name.length()>0 && !Objects.equals(city.getName(),name)){
-            city.setName(name);
-        }
-
-        if (longitude != null && !Objects.equals(city.getLongitude(),longitude)) {
-            city.setLongitude(longitude);
-        }
-        if (latitude != null && !Objects.equals(city.getLatitude(),latitude)){
-            city.setLatitude(latitude);
-        }
-
-        if (country != null && !Objects.equals(city.getCountry(),country)){
-            city.setCountry(country);
-        }
-    }
-
-    public City getCity(Long cityId) {
-        return cityRepository.findById(cityId).orElseThrow(() -> new IllegalStateException(
-                "city with id " + cityId + " does not exist"
-        ));
-    }
 
     public City getCityInCountry(String countryName, String cityName) {
         Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(
-                "Country with name " + countryName + " does not exists!"
+                "Country with name " + countryName + " does not exist!"
         ));
         return cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new IllegalStateException(
-                "City with name " + countryName + " does not exists"
+                "City with name " + countryName + " does not exist!"
         ));
+    }
+
+    public void deleteCity(String countryName, String cityName) {
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(
+                "Country with name " + countryName + " does not exist!"
+        ));
+        City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new IllegalStateException(
+                "City with name " + cityName + " does not exist!"
+        ));
+        cityRepository.deleteById(city.getId());
+    }
+    @Transactional
+    public void updateCity(String countryName, String cityName, City cityNew, Country countryNew) {
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(
+                "UpdateCity: Country with name " + countryName + " does not exist!"
+        ));
+        City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new IllegalStateException(
+                "UpdateCity: City with name " + cityName + " does not exist!"
+        ));
+
+        if (cityNew.getName() != null && cityNew.getName().length()>0 && !Objects.equals(city.getName(),cityNew.getName())){
+            city.setName(cityNew.getName());
+        }
+
+        if (cityNew.getLongitude() != null && !Objects.equals(city.getLongitude(),cityNew.getLongitude())) {
+            city.setLongitude(cityNew.getLongitude());
+        }
+        if (cityNew.getLatitude() != null && !Objects.equals(city.getLatitude(),cityNew.getLatitude())){
+            city.setLatitude(cityNew.getLatitude());
+        }
+
+        if (countryNew != null && !Objects.equals(city.getCountry(),countryNew)){
+            city.setCountry(countryNew);
+        }
     }
 }

@@ -10,6 +10,17 @@ import java.util.Set;
 @Table(name = "Country")
 public class Country {
     @Id
+    @SequenceGenerator(
+            name="country_sequence",
+            sequenceName = "country_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "country_sequence"
+    )
+    private Long id;
+
     @Column(name = "name",unique = true, columnDefinition="VARCHAR(75)")
     private String name;
 

@@ -1,7 +1,6 @@
 package cz.tul.weather.city;
 
 import cz.tul.weather.country.Country;
-import cz.tul.weather.country.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,36 +17,31 @@ public class CityController {
         this.cityService = cityService;
     }
 
+    @PostMapping(path = "/{countryName}")
+    public void registerNewCity(@PathVariable("countryName") String countryName, @RequestBody City city){
+        cityService.addNewCity(countryName,city);
+    }
+
     @GetMapping(path = "/city")
     public List<City> getCities() {return cityService.getCities();}
 
-    @GetMapping(path="/city/{cityId}")
-    public City getCity(@PathVariable("cityId") Long cityId){
-        return cityService.getCity(cityId);
-    }
-
     @GetMapping(path= "/country/{countryName}/{cityName}")
-    public City getCityInCountry(@PathVariable("countryName") String countryName, @PathVariable("cityName") String cityName){return cityService.getCityInCountry(countryName, cityName);}
-
-
-    @PostMapping(path = "/city")
-    public void registerNewCity(@RequestBody City city){
-        cityService.addNewCity(city);
+    public City getCityInCountry(@PathVariable("countryName") String countryName, @PathVariable("cityName") String cityName){
+        return cityService.getCityInCountry(countryName, cityName);
     }
 
-    @DeleteMapping(path = "/city/{cityId}")
-    public void deleteCity(@PathVariable("cityId") Long cityId){
-        cityService.deleteCity(cityId);
+    @DeleteMapping(path = "/country/{countryName}/{cityName}")
+    public void deleteCity(@PathVariable("countryName") String countryName, @PathVariable("cityName") String cityName){
+        cityService.deleteCity(countryName,cityName);
     }
 
-    @PutMapping(path = "/city/{cityId}")
+    @PutMapping(path = "/country/{countryName}/{cityName}")
     public void updateCity(
-            @PathVariable("cityId") Long cityId,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Double longitude,
-            @RequestParam(required = false) Double latitude,
-            @RequestParam(required = false) Country country
+            @PathVariable("countryName") String countryName,
+            @PathVariable("cityName") String cityName,
+            @RequestBody(required = false) City cityNew,
+            @RequestParam(required = false) Country countryNew
     ) {
-        cityService.updateCity(cityId,name,longitude,latitude,country);
+        cityService.updateCity(countryName,cityName,cityNew,countryNew);
     }
 }
