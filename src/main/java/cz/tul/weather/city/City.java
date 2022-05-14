@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Optional;
 
 @Entity
-@Table(name = "City")
+@Table
 public class City {
     @Id
     @SequenceGenerator(
@@ -22,22 +22,24 @@ public class City {
     )
     private Long id;
     private String name;
-    private double longitude;
-    private double latitude;
+    private Double longitude;
+    private Double latitude;
 
     @ManyToOne()
     @JsonBackReference
     private Country country;
 
-    public City(Long id, String name, double longitude, double latitude) {
+
+    public City() {
+    }
+
+    public City(Long id, String name, Double longitude, Double latitude) {
         this.id = id;
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
-    public City() {
-    }
 
     public City(String name, Double longitude, Double latitude, Country country) {
         this.name = name;

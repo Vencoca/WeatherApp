@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "Country")
+@Table
 public class Country {
     @Id
     @SequenceGenerator(
@@ -21,7 +21,7 @@ public class Country {
     )
     private Long id;
 
-    @Column(name = "name",unique = true, columnDefinition="VARCHAR(75)")
+    @Column(unique = true, columnDefinition="VARCHAR(75)")
     private String name;
 
     @OneToMany(mappedBy = "country",cascade = CascadeType.ALL, orphanRemoval = true)

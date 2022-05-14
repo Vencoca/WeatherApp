@@ -17,7 +17,7 @@ public class CityController {
         this.cityService = cityService;
     }
 
-    @PostMapping(path = "/{countryName}")
+    @PostMapping(path = "/country/{countryName}")
     public void registerNewCity(@PathVariable("countryName") String countryName, @RequestBody City city){
         cityService.addNewCity(countryName,city);
     }
@@ -37,11 +37,13 @@ public class CityController {
 
     @PutMapping(path = "/country/{countryName}/{cityName}")
     public void updateCity(
-            @PathVariable("countryName") String countryName,
-            @PathVariable("cityName") String cityName,
-            @RequestBody(required = false) City cityNew,
-            @RequestParam(required = false) Country countryNew
+            @PathVariable("countryName") String countryCurrentName,
+            @PathVariable("cityName") String cityCurrentName,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Double longitude,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) String country
     ) {
-        cityService.updateCity(countryName,cityName,cityNew,countryNew);
+        cityService.updateCity(countryCurrentName,cityCurrentName,name,longitude,latitude,country);
     }
 }
