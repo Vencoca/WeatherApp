@@ -1,6 +1,5 @@
 package cz.tul.weather.country;
 
-import cz.tul.weather.city.City;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ public class CountryService {
     @Autowired
     public CountryService(CountryRepository countryRepository) {this.countryRepository = countryRepository;}
 
-    public List<Country> getCountries() {return  countryRepository.findAll();}
+    public List<Country> getAllCountries() {return  countryRepository.findAll();}
 
     public Country getCountry(String countryName) {
         return countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(

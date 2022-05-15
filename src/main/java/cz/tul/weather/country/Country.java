@@ -1,13 +1,12 @@
 package cz.tul.weather.country;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import cz.tul.weather.city.City;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table
+@Table(name = "country")
 public class Country {
     @Id
     @SequenceGenerator(
@@ -50,5 +49,11 @@ public class Country {
         Cities = cities;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

@@ -17,7 +17,7 @@ public class CountryController {
     public void registerNewCountry(@RequestBody Country country){countryService.addNewCountry(country);}
 
     @GetMapping("/country")
-    public List<Country> getCountries(){return countryService.getCountries();}
+    public List<Country> getCountries(){return countryService.getAllCountries();}
 
     @GetMapping(path = "/country/{countryName}")
     public Country getCountry(@PathVariable("countryName") String countryName){return countryService.getCountry(countryName);}

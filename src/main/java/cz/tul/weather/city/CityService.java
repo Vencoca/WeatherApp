@@ -13,12 +13,12 @@ import java.util.Optional;
 @Service
 public class CityService {
 
-    private final CityRespository cityRepository;
+    private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
 
     @Autowired
-    public CityService(CityRespository cityRespository, CountryRepository countryRepository) {
-        this.cityRepository = cityRespository;
+    public CityService(CityRepository cityRepository, CountryRepository countryRepository) {
+        this.cityRepository = cityRepository;
         this.countryRepository = countryRepository;
     }
 
