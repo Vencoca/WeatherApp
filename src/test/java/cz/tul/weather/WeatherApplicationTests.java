@@ -15,24 +15,4 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 public class WeatherApplicationTests {
 
-	@Autowired
-	ApplicationContext ctx;
-	@Autowired
-	CountryRepository repository;
-
-	@Test
-	public void testContextLoads() throws Exception {
-		assertNotNull(this.ctx);
-	}
-
-
-
-	@Test
-	public void SaveCountry() {
-		Country poland = new Country(
-				"Poland"
-		);
-		repository.save(poland);
-		Assertions.assertThat(poland.getId()).isGreaterThan(0);
-	}
 }
