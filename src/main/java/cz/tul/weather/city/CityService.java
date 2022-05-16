@@ -2,6 +2,7 @@ package cz.tul.weather.city;
 
 import cz.tul.weather.country.Country;
 import cz.tul.weather.country.CountryRepository;
+import cz.tul.weather.exception.ApiRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +26,13 @@ public class CityService {
     public List<City> getCities() {return cityRepository.findAll();}
 
     public void addNewCity(String countryName, City city){
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
                 "Country with name " + countryName + " does not exist!"
         ));
 
         Optional<City> cityOptional = cityRepository.findCityByNameAndCountry(city.getName(), country);
         if (cityOptional.isPresent()){
-            throw new IllegalStateException("City with this name already exists in this country!");
+            throw new ApiRequestException("City with this name already exists in this country!");
         }
         city.setCountry(country);
         cityRepository.save(city);
@@ -39,29 +40,29 @@ public class CityService {
 
 
     public City getCityInCountry(String countryName, String cityName) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
                 "Country with name " + countryName + " does not exist!"
         ));
-        return cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new IllegalStateException(
+        return cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
                 "City with name " + cityName + " does not exist!"
         ));
     }
 
     public void deleteCity(String countryName, String cityName) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
                 "Country with name " + countryName + " does not exist!"
         ));
-        City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new IllegalStateException(
+        City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
                 "City with name " + cityName + " does not exist!"
         ));
         cityRepository.deleteById(city.getId());
     }
     @Transactional
     public void updateCity(String countryName, String cityName, String nameNew, Double longitudeNew, Double latitudeNew, String countryNameNew) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
                 "Country with name " + countryName + " does not exist!"
         ));
-        City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new IllegalStateException(
+        City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
                 "City with name " + cityName + " does not exist!"
         ));
 
@@ -77,7 +78,7 @@ public class CityService {
         }
 
         if (countryNameNew != null){
-            Country countryNew =  countryRepository.findCountryByName(countryNameNew).orElseThrow(() -> new IllegalStateException(
+            Country countryNew =  countryRepository.findCountryByName(countryNameNew).orElseThrow(() -> new ApiRequestException(
                     "Country with name " + countryNameNew + " does not exist!"
             ));
             if(!Objects.equals(city.getCountry(),countryNew)) {

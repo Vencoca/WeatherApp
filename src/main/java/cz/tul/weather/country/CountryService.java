@@ -1,5 +1,6 @@
 package cz.tul.weather.country;
 
+import cz.tul.weather.exception.ApiRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class CountryService {
     public List<Country> getAllCountries() {return  countryRepository.findAll();}
 
     public Country getCountry(String countryName) {
-        return countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(
+        return countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
                 "Country with name " + countryName + " does not exists!"
         ));
     }
@@ -26,12 +27,12 @@ public class CountryService {
     public void addNewCountry(Country country){
         Optional<Country> countryOptional = countryRepository.findCountryByName(country.getName());
         if (countryOptional.isPresent()){
-            throw new IllegalStateException("Name taken");
+            throw new ApiRequestException("Name taken");
         }
         if (country.getName() != null && country.getName().length() > 0){
             countryRepository.save(country);
         } else {
-            throw (new IllegalStateException("Name cant be empty"));
+            throw (new ApiRequestException("Name cant be empty"));
         }
     }
 
@@ -39,7 +40,7 @@ public class CountryService {
     public void deleteCountry(String countryName) {
         Optional<Country> countryOptional = countryRepository.findCountryByName(countryName);
         if (countryOptional.isEmpty()){
-            throw new IllegalStateException("Country with name " + countryName + " does not exist!");
+            throw new ApiRequestException("Country with name " + countryName + " does not exist!");
         }
         countryRepository.deleteByName(countryName);
     }
@@ -51,13 +52,13 @@ public class CountryService {
 
     @Transactional
     public void updateCountry(String countryName, Country countryNew) {
-        Country country = countryRepository.findCountryByName(countryName).orElseThrow(() -> new IllegalStateException(
+        Country country = countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
                 "Country with name " + countryName + " does not exist!"
         ));
 
         Optional<Country> countryOptional = countryRepository.findCountryByName(countryNew.getName());
         if (countryOptional.isPresent()){
-            throw new IllegalStateException("Country with name " + countryNew.getName() + " already exist!");
+            throw new ApiRequestException("Country with name " + countryNew.getName() + " already exist!");
         }
 
         if (countryNew.getName() != null && countryNew.getName().length() > 0 && !Objects.equals(country.getName(),countryNew.getName())){
@@ -71,12 +72,12 @@ public class CountryService {
         for(Country country: countries) {
             countryOptional = countryRepository.findCountryByName(country.getName());
             if (countryOptional.isPresent()) {
-                throw new IllegalStateException("Name " + country.getName() + " already taken");
+                throw new ApiRequestException("Name " + country.getName() + " already taken");
             }
             if (country.getName() != null && country.getName().length() > 0) {
                 countryRepository.save(country);
             } else {
-                throw (new IllegalStateException("Name cant be empty"));
+                throw (new ApiRequestException("Name cant be empty"));
             }
         }
     }

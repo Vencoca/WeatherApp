@@ -1,6 +1,7 @@
 package cz.tul.weather.country;
 
 
+import cz.tul.weather.exception.ApiRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -87,7 +88,7 @@ class CountryServiceTest {
         //when
         //then
         assertThatThrownBy(() -> underTest.addNewCountry(country))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ApiRequestException.class)
                 .hasMessage("Name taken");
     }
 
@@ -99,7 +100,7 @@ class CountryServiceTest {
         //When
         //Then
         assertThatThrownBy(() -> underTest.addNewCountry(country))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ApiRequestException.class)
                 .hasMessage("Name cant be empty");
     }
 
@@ -125,7 +126,7 @@ class CountryServiceTest {
         //when
         //then
         assertThatThrownBy(() -> underTest.deleteCountry(countryName))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ApiRequestException.class)
                 .hasMessage("Country with name " + countryName + " does not exist!");
     }
 
@@ -155,7 +156,7 @@ class CountryServiceTest {
         //when
         //then
         assertThatThrownBy(() -> underTest.updateCountry(countryName,countryNew))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ApiRequestException.class)
                 .hasMessage("Country with name " + countryNameNew + " already exist!");
     }
 
@@ -168,7 +169,7 @@ class CountryServiceTest {
         //when
         //then
         assertThatThrownBy(() -> underTest.updateCountry(countryName,countryNew))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ApiRequestException.class)
                 .hasMessage("Country with name " + countryName + " does not exist!");
     }
 
@@ -215,7 +216,7 @@ class CountryServiceTest {
         //when
         //then
         assertThatThrownBy(() -> underTest.addNewCountries(listOfCountries))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ApiRequestException.class)
                 .hasMessage("Name " + takenName + " already taken");
     }
 
@@ -230,7 +231,7 @@ class CountryServiceTest {
         //When
         //Then
         assertThatThrownBy(() -> underTest.addNewCountries(listOfCountries))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ApiRequestException.class)
                 .hasMessage("Name cant be empty");
     }
 
