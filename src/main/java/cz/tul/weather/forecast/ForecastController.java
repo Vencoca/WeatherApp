@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
+
 @RestController
 @RequestMapping(path = "api/v1")
 public class ForecastController {
@@ -44,9 +45,32 @@ public class ForecastController {
         City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
                 "City with name " + cityName + " does not exist!"
         ));
+
         Forecast forecast = restTemplate.getForObject("https://api.openweathermap.org/data/2.5/weather?appid="+apiKey+"&lat="+city.getLatitude()+"&lon="+city.getLongitude() +"&units=Metric",Forecast.class);
         return forecast;
     }
 
+    /*
+    @GetMapping(path = "/country/{countryName}/{cityName}/weather2")
+    public Forecast getMeasurement(
+            @PathVariable("countryName") String countryName,
+            @PathVariable("cityName") String cityName
+    ){
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
+                "Country with name " + countryName + " does not exist!"
+        ));
+        City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
+                "City with name " + cityName + " does not exist!"
+        ));
 
+        String flux = String.format( "from(bucket:\"%s\") " +
+                "|> range(start:0) " +
+                "|> filter(fn: (r) => r[\"_measurement\"] == \"sensor\") " +
+                "|> filter(fn: (r) => r[\"sensor_id\"] == \"TLM0100\"or r[\"sensor_id\"] == \"TLM0101\" or r[\"sensor_id\"] == \"TLM0103\" or r[\"sensor_id\"] == \"TLM0200\") " +
+                "|> sort() " +
+                "|> yield(name: \"sort\")", getBucket());
+
+        return null;
+    }
+     */
 }

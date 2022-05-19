@@ -1,12 +1,16 @@
 package cz.tul.weather.country;
 
 import cz.tul.weather.city.City;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 @Table(name = "country")
+@Getter @Setter @NoArgsConstructor
 public class Country {
     @Id
     @SequenceGenerator(
@@ -28,32 +32,5 @@ public class Country {
 
     public Country(String name) {
         this.name = name;
-    }
-
-    public Country() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<City> getCities() {
-        return Cities;
-    }
-
-    public void setCities(Set<City> cities) {
-        Cities = cities;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }

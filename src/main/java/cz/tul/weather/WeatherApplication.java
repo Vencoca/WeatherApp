@@ -1,12 +1,26 @@
 package cz.tul.weather;
 
+import com.influxdb.client.InfluxDBClient;
+import com.influxdb.client.InfluxDBClientFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
+
 @SpringBootApplication
+@EnableScheduling
 public class WeatherApplication {
+	@Value("${spring.influx.bucket}")
+	private String bucket;
+	@Value("${spring.influx.token}")
+	private String token;
+	@Value("${spring.influx.url}")
+	private String url;
+	@Value("${spring.influx.org}")
+	private String org;
 
 	public static void main(String[] args) {
 		SpringApplication.run(WeatherApplication.class, args);
@@ -16,6 +30,10 @@ public class WeatherApplication {
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
 	}
+
+	@Bean
+	public InfluxDBClient getInfluxDBClient(){return InfluxDBClientFactory.create(url, token.toCharArray(),org,bucket);}
+
 
 	/*
 	@Bean
