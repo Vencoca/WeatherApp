@@ -2,6 +2,8 @@ package cz.tul.weather.country;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CountryControllerTest {
