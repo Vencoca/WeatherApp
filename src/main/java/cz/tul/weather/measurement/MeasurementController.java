@@ -17,12 +17,27 @@ public class MeasurementController {
         this.measurementService = measurementService;
     }
 
-
-    @GetMapping(path = "/country/{countryName}/{cityName}/weather")
-    public List<Measurement> getMeasurement(
+    @GetMapping(path = "/country/{countryName}/{cityName}/history")
+    public List<Measurement> getMeasurements(
             @PathVariable("countryName") String countryName,
             @PathVariable("cityName") String cityName
     ){
         return measurementService.getAllMeasurementForCity(cityName,countryName);
+    }
+
+    @GetMapping(path = "/country/{countryName}/{cityName}/weather")
+    public Measurement getMeasurement(
+            @PathVariable("countryName") String countryName,
+            @PathVariable("cityName") String cityName
+    ){
+        return measurementService.getLastMeasurementForCity(cityName,countryName);
+    }
+
+    @GetMapping(path = "/country/{countryName}/{cityName}/avg")
+    public List<Measurement> getAverage(
+        @PathVariable("countryName") String countryName,
+        @PathVariable("cityName") String cityName
+    ){
+        return measurementService.getAverageForCity(cityName,countryName);
     }
 }
