@@ -2,6 +2,9 @@ package cz.tul.weather.measurement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -26,5 +29,14 @@ public class MeasurementService {
         return  measurementRepository.findMeasurementByCountryAndCity(cityName,countryName);
     }
 
+
+    public ByteArrayInputStream getMeasurementsForCityInCsv(String cityName, String countryName) {
+        List<Measurement> list = measurementRepository.findMeasurementsByCountryAndCity(cityName,countryName);
+        String out = "";
+        for(Measurement measurement : list){
+            out = out + measurement.toCsv() + System.lineSeparator();
+        }
+        return new ByteArrayInputStream(out.getBytes(StandardCharsets.UTF_8));
+    }
 }
 

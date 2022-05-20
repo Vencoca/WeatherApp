@@ -47,6 +47,17 @@ public class Measurement {
         return point;
     }
 
+    public String toCsv(){
+        String separator = ",";
+        return  temp + separator +
+                feelsLike + separator +
+                pressure + separator +
+                humidity + separator +
+                windSpeed + separator +
+                windDeg + separator +
+                time;
+    }
+
     @Override
     public String toString() {
         return "Measurement{" +
