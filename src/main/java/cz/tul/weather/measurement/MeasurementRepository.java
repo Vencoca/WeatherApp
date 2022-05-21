@@ -3,12 +3,15 @@ package cz.tul.weather.measurement;
 import com.influxdb.client.*;
 import com.influxdb.client.domain.Bucket;
 import com.influxdb.client.domain.BucketRetentionRules;
+import com.influxdb.client.domain.DeletePredicateRequest;
+import com.influxdb.client.domain.Query;
 import com.influxdb.client.write.Point;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,8 @@ public class MeasurementRepository {
     private final WriteApiBlocking writeApiBlocking;
     private final QueryApi queryApi;
     private final BucketsApi bucketsApi;
+    private final DeleteApi deleteApi;
+    private final Integer retention;
 
     public MeasurementRepository(
             @Value("${spring.influx.bucket}") String bucket,
@@ -40,6 +45,8 @@ public class MeasurementRepository {
         this.writeApiBlocking = influxDBClient.getWriteApiBlocking();
         this.queryApi = influxDBClient.getQueryApi();
         this.bucketsApi = influxDBClient.getBucketsApi();
+        this.deleteApi = influxDBClient.getDeleteApi();
+        this.retention = retention;
         setRetentionRules(retention,shardGroupDuration);
     }
 
@@ -125,5 +132,13 @@ public class MeasurementRepository {
             }
         }
         return measurements;
+    }
+
+    public void deleteAll(String cityName, String countryName) {
+        DeletePredicateRequest predicateRequest = new DeletePredicateRequest();
+        predicateRequest.setPredicate("Country=\""+countryName+"\" AND City=\""+cityName+"\"");
+        predicateRequest.setStart(OffsetDateTime.now().minus(retention, ChronoUnit.DAYS));
+        predicateRequest.setStop(OffsetDateTime.now());
+        deleteApi.delete(predicateRequest,bucket,org);
     }
 }

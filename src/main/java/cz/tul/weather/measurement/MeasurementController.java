@@ -5,9 +5,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @RestController
@@ -50,10 +49,31 @@ public class MeasurementController {
             @PathVariable("cityName") String cityName
     ){
         String filename = countryName + "_" + cityName + ".csv";
-        InputStreamResource file = new InputStreamResource(measurementService.getMeasurementsForCityInCsv(cityName,countryName));
+        InputStreamResource resource = new InputStreamResource(
+                measurementService.getMeasurementsForCityInCsv(cityName,countryName)
+        );
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("application/csv"))
-                .body(file);
+                .body(resource);
+
     }
+
+    @PostMapping(path = "/country/{countryName}/{cityName}/history/csv")
+    public void uploadCsv(
+            @PathVariable("countryName") String countryName,
+            @PathVariable("cityName") String cityName,
+            @RequestParam("file") MultipartFile file
+    ){
+        measurementService.addNewMeasurements(cityName,countryName,file);
+    }
+
+    @DeleteMapping(path = "/country/{countryName}/{cityName}/history/")
+    public void deleteAllMeasurements(
+            @PathVariable("countryName") String countryName,
+            @PathVariable("cityName") String cityName
+    ){
+        measurementService.deleteAllMeasurementsForCity(cityName,countryName);
+    }
+
 }
