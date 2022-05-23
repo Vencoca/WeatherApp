@@ -1,6 +1,7 @@
 package cz.tul.weather.city;
 
 import cz.tul.weather.country.Country;
+import cz.tul.weather.readOnlyAspect.ReadOnly;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class CityController {
     }
 
     @PostMapping(path = "/country/{countryName}")
+    @ReadOnly
     public void registerNewCity(@PathVariable("countryName") String countryName, @RequestBody City city){
         cityService.addNewCity(countryName,city);
     }
@@ -31,11 +33,13 @@ public class CityController {
     }
 
     @DeleteMapping(path = "/country/{countryName}/{cityName}")
+    @ReadOnly
     public void deleteCity(@PathVariable("countryName") String countryName, @PathVariable("cityName") String cityName){
         cityService.deleteCity(countryName,cityName);
     }
 
     @PutMapping(path = "/country/{countryName}/{cityName}")
+    @ReadOnly
     public void updateCity(
             @PathVariable("countryName") String countryCurrentName,
             @PathVariable("cityName") String cityCurrentName,

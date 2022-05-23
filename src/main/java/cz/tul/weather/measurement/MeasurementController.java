@@ -1,5 +1,6 @@
 package cz.tul.weather.measurement;
 
+import cz.tul.weather.readOnlyAspect.ReadOnly;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -60,6 +61,7 @@ public class MeasurementController {
     }
 
     @PostMapping(path = "/country/{countryName}/{cityName}/history/csv")
+    @ReadOnly
     public void uploadCsv(
             @PathVariable("countryName") String countryName,
             @PathVariable("cityName") String cityName,
@@ -69,6 +71,7 @@ public class MeasurementController {
     }
 
     @DeleteMapping(path = "/country/{countryName}/{cityName}/history/")
+    @ReadOnly
     public void deleteAllMeasurements(
             @PathVariable("countryName") String countryName,
             @PathVariable("cityName") String cityName
