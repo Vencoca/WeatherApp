@@ -3,6 +3,7 @@ package cz.tul.weather.city;
 import cz.tul.weather.country.Country;
 import cz.tul.weather.country.CountryRepository;
 import cz.tul.weather.exception.ApiRequestException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +13,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CityService {
 
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
+    private String errorMessage;
 
     @Autowired
     public CityService(CityRepository cityRepository, CountryRepository countryRepository) {
@@ -26,13 +29,17 @@ public class CityService {
     public List<City> getCities() {return cityRepository.findAll();}
 
     public void addNewCity(String countryName, City city){
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
-                "Country with name " + countryName + " does not exist!"
-        ));
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> {
+            errorMessage = "Country with name " + countryName + " does not exist!";
+            log.warn(errorMessage);
+            return new ApiRequestException(errorMessage);
+        });
 
         Optional<City> cityOptional = cityRepository.findCityByNameAndCountry(city.getName(), country);
         if (cityOptional.isPresent()){
-            throw new ApiRequestException("City with this name already exists in this country!");
+            errorMessage = "City with this name" + city.getName() + " already exists in this country!";
+            log.warn(errorMessage);
+            throw new ApiRequestException(errorMessage);
         }
         city.setCountry(country);
         cityRepository.save(city);
@@ -40,28 +47,38 @@ public class CityService {
 
 
     public City getCityInCountry(String countryName, String cityName) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
-                "Country with name " + countryName + " does not exist!"
-        ));
-        return cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
-                "City with name " + cityName + " does not exist!"
-        ));
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> {
+            errorMessage = "Country with name " + countryName + " does not exist!";
+            log.warn(errorMessage);
+            return new ApiRequestException(errorMessage);
+        });
+        return cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> {
+            errorMessage = "City with name " + cityName + " does not exist!";
+            log.warn(errorMessage);
+            return new ApiRequestException(errorMessage);
+        });
     }
 
     public void deleteCity(String countryName, String cityName) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
-                "Country with name " + countryName + " does not exist!"
-        ));
-        City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
-                "City with name " + cityName + " does not exist!"
-        ));
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> {
+            errorMessage = "Country with name " + countryName + " does not exist!";
+            log.warn(errorMessage);
+            return new ApiRequestException(errorMessage);
+        });
+        City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> {
+            errorMessage = "City with name " + cityName + " does not exist!";
+            log.warn(errorMessage);
+            return new ApiRequestException(errorMessage);
+        });
         cityRepository.deleteById(city.getId());
     }
     @Transactional
     public void updateCity(String countryName, String cityName, String nameNew, Double longitudeNew, Double latitudeNew, String countryNameNew) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
-                "Country with name " + countryName + " does not exist!"
-        ));
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> {
+            errorMessage = "Country with name " + countryName + " does not exist!";
+            log.warn(errorMessage);
+            return new ApiRequestException(errorMessage);
+        });
         City city = cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
                 "City with name " + cityName + " does not exist!"
         ));
@@ -78,9 +95,11 @@ public class CityService {
         }
 
         if (countryNameNew != null){
-            Country countryNew =  countryRepository.findCountryByName(countryNameNew).orElseThrow(() -> new ApiRequestException(
-                    "Country with name " + countryNameNew + " does not exist!"
-            ));
+            Country countryNew =  countryRepository.findCountryByName(countryNameNew).orElseThrow(() -> {
+                errorMessage = "Country with name " + countryNameNew + " does not exist!";
+                log.warn(errorMessage);
+                return new ApiRequestException(errorMessage);
+            });
             if(!Objects.equals(city.getCountry(),countryNew)) {
                 city.setCountry(countryNew);
             }

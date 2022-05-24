@@ -4,6 +4,7 @@ import cz.tul.weather.city.CityRepository;
 import cz.tul.weather.country.Country;
 import cz.tul.weather.country.CountryRepository;
 import cz.tul.weather.exception.ApiRequestException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,10 +18,12 @@ import java.util.Objects;
 import java.util.Scanner;
 
 @Service
+@Slf4j
 public class MeasurementService {
     private final MeasurementRepository measurementRepository;
     private final CountryRepository countryRepository;
     private final CityRepository cityRepository;
+    private String errorMessage;
 
     @Autowired
     public MeasurementService(MeasurementRepository measurementRepository, CountryRepository countryRepository, CityRepository cityRepository) {
@@ -30,42 +33,22 @@ public class MeasurementService {
     }
 
     public List<Measurement> getAllMeasurementForCity(String cityName,String countryName){
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
-                "Country with name " + countryName + " does not exist!"
-        ));
-        cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
-                "City with name " + cityName + " does not exist!"
-        ));
-       return measurementRepository.findMeasurementsByCountryAndCity(cityName,countryName);
+        getCountryAndCheckCityFromRepository(cityName, countryName);
+        return measurementRepository.findMeasurementsByCountryAndCity(cityName,countryName);
     }
 
     public List<Measurement> getAverageForCity(String cityName, String countryName) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
-                "Country with name " + countryName + " does not exist!"
-        ));
-        cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
-                "City with name " + cityName + " does not exist!"
-        ));
+        getCountryAndCheckCityFromRepository(cityName, countryName);
         return measurementRepository.findAveragesByCountryAndCity(cityName,countryName);
     }
 
     public Measurement getLastMeasurementForCity(String cityName, String countryName) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
-                "Country with name " + countryName + " does not exist!"
-        ));
-        cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
-                "City with name " + cityName + " does not exist!"
-        ));
+        getCountryAndCheckCityFromRepository(cityName, countryName);
         return  measurementRepository.findMeasurementByCountryAndCity(cityName,countryName);
     }
 
     public ByteArrayInputStream getMeasurementsForCityInCsv(String cityName, String countryName) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
-                "Country with name " + countryName + " does not exist!"
-        ));
-        cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
-                "City with name " + cityName + " does not exist!"
-        ));
+        getCountryAndCheckCityFromRepository(cityName, countryName);
         List<Measurement> list = measurementRepository.findMeasurementsByCountryAndCity(cityName,countryName);
         String out = "";
         for(Measurement measurement : list){
@@ -75,12 +58,7 @@ public class MeasurementService {
     }
 
     public void addNewMeasurements(String cityName, String countryName, MultipartFile file) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
-                "Country with name " + countryName + " does not exist!"
-        ));
-        cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
-                "City with name " + cityName + " does not exist!"
-        ));
+        getCountryAndCheckCityFromRepository(cityName, countryName);
         try {
             String csvFileContent = new String(file.getBytes());
             Scanner scanner = new Scanner(csvFileContent);
@@ -88,7 +66,9 @@ public class MeasurementService {
                 String line = scanner.nextLine();
                 String [] arguments = line.split(",");
                 if (arguments.length != 7){
-                    throw new ApiRequestException("Too many arguments in line: " + line);
+                    String message = "Too many arguments in line: " + line;
+                    log.warn(message);
+                    throw new ApiRequestException(message);
                 }
                 Measurement measurement = new Measurement();
                 measurement.setTemp(Double.parseDouble(arguments[0]));
@@ -100,25 +80,37 @@ public class MeasurementService {
                 measurement.setTime(Instant.parse(arguments[6]));
 
                 if(!Objects.equals(measurement.toCsv(), line)) {
-                    throw new ApiRequestException("Error in converting line to object | line: " + line);
+                    String message = "Too many arguments in line: " + line;
+                    log.warn(message);
+                    throw new ApiRequestException(message);
                 }
                 measurementRepository.save(measurement.getPoint(countryName,cityName));
             }
             scanner.close();
         } catch (IOException|NumberFormatException e) {
-            throw new ApiRequestException("Error cant parse file!");
+            String message = "Error cant parse file!";
+            log.warn(message);
+            throw new ApiRequestException(message);
         }
 
     }
 
     public void deleteAllMeasurementsForCity(String cityName, String countryName) {
-        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> new ApiRequestException(
-                "Country with name " + countryName + " does not exist!"
-        ));
-        cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> new ApiRequestException(
-                "City with name " + cityName + " does not exist!"
-        ));
+        getCountryAndCheckCityFromRepository(cityName, countryName);
         measurementRepository.deleteAll(cityName,countryName);
+    }
+
+    private void getCountryAndCheckCityFromRepository(String cityName, String countryName) {
+        Country country =  countryRepository.findCountryByName(countryName).orElseThrow(() -> {
+            errorMessage = "Country with name " + countryName + " does not exist!";
+            log.warn(errorMessage);
+            return new ApiRequestException(errorMessage);
+        });
+        cityRepository.findCityByNameAndCountry(cityName,country).orElseThrow(() -> {
+            errorMessage = "City with name " + cityName + " does not exist!";
+            log.warn(errorMessage);
+            return new ApiRequestException(errorMessage);
+        });
     }
 }
 
