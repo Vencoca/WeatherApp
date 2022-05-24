@@ -61,7 +61,7 @@ class CountryServiceTest {
         //When
         //Then
         assertThatThrownBy(() -> underTest.getCountry(countryName))
-                .hasMessage("Country with name " + countryName + " does not exists!");
+                .hasMessage("Country with name " + countryName + " does not exist!");
     }
 
     @Test

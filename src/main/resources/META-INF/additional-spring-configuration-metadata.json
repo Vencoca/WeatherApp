@@ -1,0 +1,48 @@
+{
+  "properties": [
+    {
+      "name": "weather.api.key",
+      "type": "java.lang.String",
+      "description": "Openeweather Key."
+    },
+    {
+      "name": "weather.api.maxCalls",
+      "type": "java.lang.Integer",
+      "description": "Maximum calls per minute to OW API."
+    },
+    {
+      "name": "weather.db.update",
+      "type": "java.lang.Integer",
+      "description": "Delay in MS between updates."
+    },
+    {
+      "name": "read-only.mode",
+      "type": "java.lang.Boolean",
+      "description": "Flag for ReadOnly mode."
+    },
+    {
+      "name": "spring.influx.token",
+      "type": "java.lang.String",
+      "description": "Token for connecting to InfluxDB."
+    },
+    {
+      "name": "spring.influx.bucket",
+      "type": "java.lang.String",
+      "description": "Name of influxDB bucket."
+    },
+    {
+      "name": "spring.influx.org",
+      "type": "java.lang.String",
+      "description": "Name of influxDB org."
+    },
+    {
+      "name": "spring.influx.retention",
+      "type": "java.lang.Integer",
+      "description": "Days how long will influxDB keep data."
+    },
+    {
+      "name": "spring.influx.shardgroupduration",
+      "type": "java.lang.String",
+      "description": "Days how long will influxDB keep data in one shard."
+    }
+  ] }
