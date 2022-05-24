@@ -37,7 +37,7 @@ public class CityService {
 
         Optional<City> cityOptional = cityRepository.findCityByNameAndCountry(city.getName(), country);
         if (cityOptional.isPresent()){
-            errorMessage = "City with this name" + city.getName() + " already exists in this country!";
+            errorMessage = "City with this name " + city.getName() + " already exists in this country!";
             log.warn(errorMessage);
             throw new ApiRequestException(errorMessage);
         }
