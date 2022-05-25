@@ -30,5 +30,12 @@ public class City {
     @ManyToOne()
     @JsonBackReference
     private Country country;
+
+    public City(String name, Double longitude, Double latitude, Country country) {
+        this.name = name;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.country = country;
+    }
 }
 

@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CountryIntegrationTest {
+public class CountryApiIntegrationTest {
 
     @Autowired
     private CountryRepository countryRepository;
