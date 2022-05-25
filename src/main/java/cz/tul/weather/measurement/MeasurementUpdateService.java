@@ -5,6 +5,7 @@ import cz.tul.weather.city.CityRepository;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@ConditionalOnProperty(prefix = "read-only", name = "mode", havingValue = "false")
+@ConditionalOnExpression("${read-only.mode} == false and ${update.mode} == true")
 public class MeasurementUpdateService {
     @Value("${weather.api.key}")
     private String apiKey;

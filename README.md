@@ -17,8 +17,6 @@ Pro ukládání státu a města zvolte relační databázi. Pro ukládání mě�
 
 ### API
 Aplikace bude poskytovat MVC a REST API pro přímou komunikaci.
-### MVC
-Aplikace bude generovat jednoduchou HTML stránku, která zobrazí poslední měření pro všechna uložená městapro zvolený stát.
 ### REST
 Aplikace bude obsahovat REST rozhraní pro přidávání, editaci a mazání států, měst a měření.A dále zobrazení aktuálních hodnot a průměru za poslední den, týden a 14 dní.
 ### Testování

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>cz.tul</groupId>
 	<artifactId>weather</artifactId>
-	<version>0.8.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>weather</name>
 	<description>Weather app for PPJ</description>
 	<properties>

@@ -33,6 +33,16 @@ public class Measurement {
         this.windDeg = wind.getInt("deg");
     }
 
+    public Measurement(Double temp, Double feelsLike, Long pressure, Integer humidity, Double windSpeed, Integer windDeg, Instant time) {
+        this.temp = temp;
+        this.feelsLike = feelsLike;
+        this.pressure = pressure;
+        this.humidity = humidity;
+        this.windSpeed = windSpeed;
+        this.windDeg = windDeg;
+        this.time = time;
+    }
+
     public Point getPoint(String countryName, String cityName){
         Point point = new Point("Weather");
         point.addTag("Country", countryName)
@@ -56,18 +66,5 @@ public class Measurement {
                 windSpeed + separator +
                 windDeg + separator +
                 time;
-    }
-
-    @Override
-    public String toString() {
-        return "Measurement{" +
-                "temp=" + temp +
-                ", feelsLike=" + feelsLike +
-                ", pressure=" + pressure +
-                ", humidity=" + humidity +
-                ", windSpeed=" + windSpeed +
-                ", windDeg=" + windDeg +
-                ", time=" + time +
-                '}';
     }
 }

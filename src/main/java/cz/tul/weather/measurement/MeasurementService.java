@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 @Service
@@ -50,11 +49,11 @@ public class MeasurementService {
     public ByteArrayInputStream getMeasurementsForCityInCsv(String cityName, String countryName) {
         getCountryAndCheckCityFromRepository(cityName, countryName);
         List<Measurement> list = measurementRepository.findMeasurementsByCountryAndCity(cityName,countryName);
-        String out = "";
+        StringBuilder out = new StringBuilder();
         for(Measurement measurement : list){
-            out = out + measurement.toCsv() + System.lineSeparator();
+            out.append(measurement.toCsv()).append(System.lineSeparator());
         }
-        return new ByteArrayInputStream(out.getBytes(StandardCharsets.UTF_8));
+        return new ByteArrayInputStream(out.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public void addNewMeasurements(String cityName, String countryName, MultipartFile file) {
@@ -78,12 +77,6 @@ public class MeasurementService {
                 measurement.setWindSpeed(Double.parseDouble(arguments[4]));
                 measurement.setWindDeg(Integer.parseInt(arguments[5]));
                 measurement.setTime(Instant.parse(arguments[6]));
-
-                if(!Objects.equals(measurement.toCsv(), line)) {
-                    String message = "Too many arguments in line: " + line;
-                    log.warn(message);
-                    throw new ApiRequestException(message);
-                }
                 measurementRepository.save(measurement.getPoint(countryName,cityName));
             }
             scanner.close();
