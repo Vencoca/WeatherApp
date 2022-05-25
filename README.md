@@ -1,4 +1,4 @@
-##Projekt PPJ
+## Projekt PPJ
 
 Cílem projektu je vytvořit aplikaci pro ukládání a zobrazování meteorologických dat, která jsou průběžně stahována z http://www.openweathermap.com
 
